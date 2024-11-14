@@ -14,7 +14,7 @@ const ShowcasePage = () => {
     const fetchShowcase = async () => {
       try {
         const encodedName = encodeURIComponent(name);
-        console.log("Fetching showcase for:", encodedName);
+        console.log("Fetching showcase for1:", encodedName);
 
         const response = await axios.get(
           `https://carzy-314787054684.asia-south2.run.app//api/showcase/${encodedName}`
