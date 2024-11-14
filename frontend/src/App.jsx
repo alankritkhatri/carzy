@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard/dashboard";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import AuthPage from "./pages/Authentication/AuthPage";
 import Navbar from "./components/Navbar";
 import { Provider } from "react-redux";
