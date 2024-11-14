@@ -29,11 +29,14 @@ const EditCar = () => {
 
   const fetchCarDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/cars/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `https://carzy-314787054684.asia-south2.run.app//api/cars/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setCarData(response.data);
     } catch (err) {
       setError("Failed to fetch car details");
@@ -101,7 +104,7 @@ const EditCar = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/cars/${id}`,
+        `https://carzy-314787054684.asia-south2.run.app//api/cars/${id}`,
         carData,
         {
           headers: {

@@ -89,7 +89,7 @@ const CreateCar = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/cars",
+        "https://carzy-314787054684.asia-south2.run.app//api/cars",
         carData,
         {
           headers: {

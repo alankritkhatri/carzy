@@ -10,7 +10,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "https://carzy-314787054684.asia-south2.run.app/",
         description: "Development server",
       },
     ],

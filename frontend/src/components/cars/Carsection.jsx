@@ -17,11 +17,14 @@ const Carsection = () => {
 
   const fetchCars = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/cars", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://carzy-314787054684.asia-south2.run.app//api/cars",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setCars(response.data);
       setLoading(false);
     } catch (err) {
@@ -47,11 +50,14 @@ const Carsection = () => {
     if (!window.confirm("Are you sure you want to delete this car?")) return;
 
     try {
-      await axios.delete(`http://localhost:3000/api/cars/${carId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(
+        `https://carzy-314787054684.asia-south2.run.app//api/cars/${carId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       // Refresh the cars list
       fetchCars();
