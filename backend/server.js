@@ -14,13 +14,48 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Add CORS middleware before other middleware
+// CORS configuration
+const allowedOrigins = [
+  "http://localhost:5173", // Vite dev server
+  "http://localhost:3000", // Local development
+  "https://carzy.vercel.app", // Production
+  "https://www.carzy.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "https://carzy.vercel.app",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log("Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+    maxAge: 86400, // 24 hours
   })
 );
+
+// Additional headers for extra CORS support
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    return res.status(200).json({});
+  }
+  next();
+});
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
