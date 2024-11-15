@@ -59,7 +59,7 @@ const AuthPage = () => {
           };
 
       const response = await axios.post(
-        `https://carzy-314787054684.asia-south2.run.app/${endpoint}`,
+        `https://carzy-314787054684.asia-south2.run.app${endpoint}`,
         payload
       );
 

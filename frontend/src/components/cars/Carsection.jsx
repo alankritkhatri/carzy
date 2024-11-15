@@ -18,7 +18,7 @@ const Carsection = () => {
   const fetchCars = async () => {
     try {
       const response = await axios.get(
-        "https://carzy-314787054684.asia-south2.run.app//api/cars",
+        "https://carzy-314787054684.asia-south2.run.app/api/cars",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -51,7 +51,7 @@ const Carsection = () => {
 
     try {
       await axios.delete(
-        `https://carzy-314787054684.asia-south2.run.app//api/cars/${carId}`,
+        `https://carzy-314787054684.asia-south2.run.app/api/cars/${carId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

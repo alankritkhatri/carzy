@@ -30,7 +30,7 @@ const EditCar = () => {
   const fetchCarDetails = async () => {
     try {
       const response = await axios.get(
-        `https://carzy-314787054684.asia-south2.run.app//api/cars/${id}`,
+        `https://carzy-314787054684.asia-south2.run.app/api/cars/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,7 +104,7 @@ const EditCar = () => {
 
     try {
       const response = await axios.put(
-        `https://carzy-314787054684.asia-south2.run.app//api/cars/${id}`,
+        `https://carzy-314787054684.asia-south2.run.app/api/cars/${id}`,
         carData,
         {
           headers: {
