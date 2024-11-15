@@ -62,12 +62,20 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // connecting to the database
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DB_STRING, {});
+    await mongoose.connect(process.env.DB_STRING, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      retryWrites: true,
+      w: "majority",
+      // Add these if you're using SSL/TLS (which you should with Atlas)
+      ssl: true,
+      tls: true,
+    });
     console.log("MongoDB is now connected");
 
     // Access the 'carzy' database and 'userdata' collection
     const database = mongoose.connection.db;
-    global.userData = database.collection("userdata"); // Declare globally for use in routes
+    global.userData = database.collection("userdata");
   } catch (err) {
     console.error("MongoDB connection error:", err);
     process.exit(1);
