@@ -72,9 +72,6 @@ const connectDB = async () => {
           w: "majority",
           serverSelectionTimeoutMS: 10000, // Increased timeout to 10 seconds
           socketTimeoutMS: 45000,
-          // Add these options for better reliability
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
         });
         console.log("MongoDB is now connected");
         break; // Connection successful, exit the retry loop
