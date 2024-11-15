@@ -133,11 +133,12 @@ const CreateCar = () => {
         `/api/proxy/lexica?q=${encodeURIComponent(searchQuery)}`
       );
 
-      // Get first three unique images from the results
-      const imageUrls = response.data.images
+      // Safely access the images array with error handling
+      const images = response.data?.images || [];
+      const imageUrls = images
+        .filter((img) => img && img.src) // Ensure img and img.src exist
         .slice(0, 3)
-        .map((img) => img.src)
-        .filter((url) => url);
+        .map((img) => img.src);
 
       if (imageUrls.length === 0) {
         throw new Error("No images found");
