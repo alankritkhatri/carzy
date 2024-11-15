@@ -127,10 +127,20 @@ const CreateCar = () => {
       if (model.toLowerCase().includes("truck")) carType = "Truck";
       if (model.toLowerCase().includes("van")) carType = "Van";
 
-      // Search for car images using our proxy endpoint
-      const searchQuery = `${company} ${model} car`; // Simplified search query
+      // Use the full production URL
+      const baseUrl =
+        process.env.NODE_ENV === "production"
+          ? "https://carzy-314787054684.asia-south2.run.app"
+          : "";
+
+      const searchQuery = `${company} ${model} car`;
       const response = await axios.get(
-        `/api/proxy/lexica?q=${encodeURIComponent(searchQuery)}`
+        `${baseUrl}/api/proxy/lexica?q=${encodeURIComponent(searchQuery)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token if needed
+          },
+        }
       );
 
       // Safely access the images array with error handling
