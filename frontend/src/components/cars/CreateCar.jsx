@@ -128,7 +128,7 @@ const CreateCar = () => {
       if (model.toLowerCase().includes("van")) carType = "Van";
 
       // Search for car images using our proxy endpoint
-      const searchQuery = `${year} ${company} ${model} ${carType} car photo`;
+      const searchQuery = `${company} ${model} car`; // Simplified search query
       const response = await axios.get(
         `/api/proxy/lexica?q=${encodeURIComponent(searchQuery)}`
       );
@@ -136,15 +136,11 @@ const CreateCar = () => {
       // Safely access the images array with error handling
       const images = response.data?.images || [];
       const imageUrls = images
-        .filter((img) => img && img.src) // Ensure img and img.src exist
+        .filter((img) => img && img.src)
         .slice(0, 3)
         .map((img) => img.src);
 
-      if (imageUrls.length === 0) {
-        throw new Error("No images found");
-      }
-
-      // Generic descriptions based on car type
+      // Update form data even if no images are found
       const descriptions = {
         SUV: `The ${year} ${company} ${model} SUV offers exceptional versatility and comfort for both city driving and outdoor adventures.`,
         Sedan: `The ${year} ${company} ${model} sedan delivers a perfect blend of comfort, style, and efficiency.`,
@@ -152,7 +148,6 @@ const CreateCar = () => {
         Van: `The ${year} ${company} ${model} van provides maximum space and flexibility for all your transportation needs.`,
       };
 
-      // Update form data
       setCarData({
         ...carData,
         title: carName,
@@ -171,11 +166,18 @@ const CreateCar = () => {
           "automatic",
           "new",
         ],
-        images: imageUrls,
+        images: imageUrls, // This might be empty, but that's okay
       });
+
+      // Only show error if no images were found
+      if (imageUrls.length === 0) {
+        setError("No images found. Please upload images manually.");
+      }
     } catch (err) {
       console.error("Generation error:", err);
-      setError("Failed to find car images. Please try uploading manually.");
+      setError(
+        "Failed to generate car details. Please try again or enter details manually."
+      );
     } finally {
       setGenerating(false);
     }
