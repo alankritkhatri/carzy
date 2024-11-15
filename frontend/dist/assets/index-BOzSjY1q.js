@@ -12669,7 +12669,9 @@ const dv = () => {
         try {
           const y = await I.get(
             "https://carzy-314787054684.asia-south2.run.app/api/cars",
-            { headers: { Authorization: `Bearer ${a}` } }
+            {
+              headers: { Authorization: `Bearer ${a}` },
+            }
           );
           t(y.data), o(!1);
         } catch {
@@ -12692,7 +12694,9 @@ const dv = () => {
           try {
             await I.delete(
               `https://carzy-314787054684.asia-south2.run.app/api/cars/${y}`,
-              { headers: { Authorization: `Bearer ${a}` } }
+              {
+                headers: { Authorization: `Bearer ${a}` },
+              }
             ),
               c();
           } catch {
@@ -14570,7 +14574,9 @@ const o1 = () => {
               await I.post(
                 "https://carzy-314787054684.asia-south2.run.app/api/cars",
                 s,
-                { headers: { Authorization: `Bearer ${t}` } }
+                {
+                  headers: { Authorization: `Bearer ${t}` },
+                }
               )
             ).status === 201
           )
@@ -14934,7 +14940,9 @@ const o1 = () => {
         try {
           const p = await I.get(
             `https://carzy-314787054684.asia-south2.run.app/api/cars/${e}`,
-            { headers: { Authorization: `Bearer ${n}` } }
+            {
+              headers: { Authorization: `Bearer ${n}` },
+            }
           );
           u(p.data);
         } catch {
@@ -14982,7 +14990,9 @@ const o1 = () => {
               await I.put(
                 `https://carzy-314787054684.asia-south2.run.app/api/cars/${e}`,
                 a,
-                { headers: { Authorization: `Bearer ${n}` } }
+                {
+                  headers: { Authorization: `Bearer ${n}` },
+                }
               )
             ).status === 200
           )

@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 // CORS configuration
 const allowedOrigins = [
   "http://localhost:5173", // Vite dev server
-  "http://localhost:3000", // Local development
+  "https://carzy-314787054684.asia-south2.run.app", // Local development
   "https://carzy.vercel.app", // Production
   "https://www.carzy.vercel.app",
 ];
@@ -63,19 +63,25 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.DB_STRING, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       retryWrites: true,
       w: "majority",
-      // Add these if you're using SSL/TLS (which you should with Atlas)
-      ssl: true,
-      tls: true,
+      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
     });
     console.log("MongoDB is now connected");
 
     // Access the 'carzy' database and 'userdata' collection
     const database = mongoose.connection.db;
     global.userData = database.collection("userdata");
+
+    // Add error handling for the connection
+    mongoose.connection.on("error", (err) => {
+      console.error("MongoDB connection error:", err);
+    });
+
+    mongoose.connection.on("disconnected", () => {
+      console.log("MongoDB disconnected. Attempting to reconnect...");
+    });
   } catch (err) {
     console.error("MongoDB connection error:", err);
     process.exit(1);
@@ -191,8 +197,12 @@ app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Add request logging
+    console.log("Login attempt for email:", email);
+
     // Validate input
     if (!email || !password) {
+      console.log("Missing email or password");
       return res
         .status(400)
         .json({ message: "Email and password are required" });
@@ -201,6 +211,7 @@ app.post("/api/login", async (req, res) => {
     // Check if the user exists
     const user = await User.findOne({ email });
     if (!user) {
+      console.log("User not found:", email);
       return res
         .status(404)
         .json({ message: "User not Registered with Carzy" });
@@ -209,23 +220,40 @@ app.post("/api/login", async (req, res) => {
     // Compare the provided password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log("Password mismatch for user:", email);
       return res.status(400).json({ message: "Incorrect Password or Email" });
     }
 
     // Create a JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "12h",
-    });
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email, // Add additional claims if needed
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "12h" }
+    );
 
-    // Return the token and user name in the response
+    console.log("Login successful for user:", email);
+
+    // Return the token and user info in the response
     res.json({
       token,
       name: user.name,
       role: user.role,
+      email: user.email,
     });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    // Enhanced error logging
+    console.error("Login error details:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
+    res.status(500).json({
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 });
 
