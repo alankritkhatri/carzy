@@ -16,8 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 // CORS configuration
 const allowedOrigins = [
-  "http://localhost:5173", // Vite dev server
-  "https://carzy-314787054684.asia-south2.run.app", // Local development
+  "http://localhost:5173", // Vite dev server // Local development
   "https://carzy.vercel.app", // Production
   "https://www.carzy.vercel.app",
 ];
@@ -62,13 +61,30 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // connecting to the database
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DB_STRING, {
-      retryWrites: true,
-      w: "majority",
-      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
-      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-    });
-    console.log("MongoDB is now connected");
+    // Add retry logic
+    let retries = 3;
+    while (retries > 0) {
+      try {
+        await mongoose.connect(process.env.DB_STRING, {
+          retryWrites: true,
+          w: "majority",
+          serverSelectionTimeoutMS: 10000, // Increased timeout to 10 seconds
+          socketTimeoutMS: 45000,
+          // Add these options for better reliability
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        });
+        console.log("MongoDB is now connected");
+        break; // Connection successful, exit the retry loop
+      } catch (err) {
+        retries--;
+        if (retries === 0) throw err;
+        console.log(
+          `Connection failed, retrying... (${retries} attempts left)`
+        );
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds before retrying
+      }
+    }
 
     // Access the 'carzy' database and 'userdata' collection
     const database = mongoose.connection.db;
@@ -83,7 +99,10 @@ const connectDB = async () => {
       console.log("MongoDB disconnected. Attempting to reconnect...");
     });
   } catch (err) {
-    console.error("MongoDB connection error:", err);
+    console.error("MongoDB connection error:", err.message);
+    console.error(
+      "Please ensure your IP address is whitelisted in MongoDB Atlas"
+    );
     process.exit(1);
   }
 };
