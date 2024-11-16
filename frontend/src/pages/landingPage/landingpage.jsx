@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     email: "",
     password: "",
     role: "",
