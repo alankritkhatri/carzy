@@ -23,13 +23,17 @@ export default function LandingPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      console.log(formData);
+      const response = await fetch(
+        "https://carzy-314787054684.asia-south2.run.app/api/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();
