@@ -195,6 +195,15 @@ export default function LandingPage() {
                     onChange={handleInputChange}
                     required
                   />
+                  <input
+                    className="flex-1 px-4 py-2 rounded-lg border border-gray-200"
+                    placeholder="Role"
+                    type="text"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    required
+                  />
                   <button
                     className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium"
                     type="submit"
