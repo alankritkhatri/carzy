@@ -177,8 +177,8 @@ export default function LandingPage() {
                     className="flex-1 px-4 py-2 rounded-lg border border-gray-200"
                     placeholder="Full Name"
                     type="text"
-                    name="fullName"
-                    value={formData.fullName}
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
                     required
                   />
