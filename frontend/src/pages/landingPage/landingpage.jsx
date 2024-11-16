@@ -6,6 +6,7 @@ export default function LandingPage() {
     fullName: "",
     email: "",
     password: "",
+    role: "",
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
