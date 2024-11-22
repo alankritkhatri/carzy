@@ -12,7 +12,6 @@ import PublicCarView from "./components/cars/PublicCarView";
 import PublicCarDetail from "./components/cars/PublicCarDetail";
 import ShowcasePage from "./pages/ShowcasePage/ShowcasePage";
 
-// Create a separate component for the routes
 const AppRoutes = () => {
   const { isAuthenticated } = useSelector((state) => state.user);
 
