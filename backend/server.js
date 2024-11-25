@@ -20,6 +20,7 @@ const allowedOrigins = [
   "https://carzy.vercel.app", // Production
   "https://www.carzy.vercel.app",
   "https://carzy-314787054684.asia-south2.run.app",
+  "https://www.carzy.store",
 ];
 
 app.use(
