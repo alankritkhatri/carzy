@@ -110,10 +110,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold">User Authentication</h3>
-                <p className="text-center text-gray-500">
+                <div className="text-center text-gray-500">
                   Secure login and signup functionality for managing your
                   inventory.
-                </p>
+                </div>
               </div>
               <div className="flex flex-col items-center space-y-4 p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                 <div className="p-3 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full">
@@ -127,10 +127,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold">Detailed Car Listings</h3>
-                <p className="text-center text-gray-500">
-                  Add up to 10 images, title, description, and tags for each
-                  car.
-                </p>
+                <div className="text-center text-gray-500">
+                  Add multiple images and details to showcase your cars
+                  effectively.
+                </div>
               </div>
               <div className="flex flex-col items-center space-y-4 p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                 <div className="p-3 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full">
@@ -149,10 +149,9 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold">Advanced Search</h3>
-                <p className="text-center text-gray-500">
-                  Quickly find cars by searching through titles, descriptions,
-                  and tags.
-                </p>
+                <div className="text-center text-gray-500">
+                  Find cars quickly with our smart search system.
+                </div>
               </div>
             </div>
           </div>

@@ -109,21 +109,15 @@ const connectDB = async () => {
 
 // Add this helper function at the top
 const generateUniqueUrl = (title) => {
-  const timestamp = Date.now().toString(36);
-  const slug = title
+  return `${title
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-  return `${slug}-${timestamp}`;
+    .replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString(36)}`;
 };
 
 const generateShowcaseUrl = (name) => {
-  const timestamp = Date.now().toString(36);
-  const slug = name
+  return `${name
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-  return `${slug}-${timestamp}`;
+    .replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString(36)}`;
 };
 
 // ROUTES

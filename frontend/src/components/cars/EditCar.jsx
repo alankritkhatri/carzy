@@ -53,28 +53,27 @@ const EditCar = () => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
-    const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
-    if (oversizedFiles.length > 0) {
-      setError("Some images are too large. Maximum size per image is 5MB");
-      return;
-    }
-
     if (files.length > 10) {
       setError("Maximum 10 images allowed");
       return;
     }
 
-    const imagePromises = files.map((file) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.readAsDataURL(file);
-      });
-    });
+    const oversizedFiles = files.filter((file) => file.size > 5 * 1024 * 1024);
+    if (oversizedFiles.length) {
+      setError("Some images are too large. Maximum size per image is 5MB");
+      return;
+    }
 
-    Promise.all(imagePromises).then((base64Images) => {
+    Promise.all(
+      files.map(
+        (file) =>
+          new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+          })
+      )
+    ).then((base64Images) => {
       setCarData({ ...carData, images: base64Images });
     });
   };

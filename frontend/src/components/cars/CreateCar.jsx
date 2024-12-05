@@ -115,72 +115,52 @@ const CreateCar = () => {
     setError("");
 
     try {
-      // Split the car name into parts
-      const parts = carName.split(" ");
-      const company = parts[0];
-      const model = parts[1] || "";
-      const year = parts[2] || new Date().getFullYear();
+      const [company, model, year = new Date().getFullYear()] =
+        carName.split(" ");
+      const carType = model?.toLowerCase().includes("suv")
+        ? "SUV"
+        : model?.toLowerCase().includes("truck")
+        ? "Truck"
+        : model?.toLowerCase().includes("van")
+        ? "Van"
+        : "Sedan";
 
-      // Determine car type
-      let carType = "Sedan";
-      if (model.toLowerCase().includes("suv")) carType = "SUV";
-      if (model.toLowerCase().includes("truck")) carType = "Truck";
-      if (model.toLowerCase().includes("van")) carType = "Van";
-
-      // Use the full production URL
       const baseUrl =
         process.env.NODE_ENV === "production"
           ? "https://carzy-314787054684.asia-south2.run.app"
           : "";
-
-      const searchQuery = `${company} ${model} car`;
       const response = await axios.get(
-        `${baseUrl}/api/proxy/lexica?q=${encodeURIComponent(searchQuery)}`,
+        `${baseUrl}/api/proxy/lexica?q=${encodeURIComponent(
+          `${company} ${model} car`
+        )}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`, // Add token if needed
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      // Safely access the images array with error handling
-      const images = response.data?.images || [];
-      const imageUrls = images
-        .filter((img) => img && img.src)
+      const imageUrls = (response.data?.images || [])
+        .filter((img) => img?.src)
         .slice(0, 3)
         .map((img) => img.src);
 
-      // Update form data even if no images are found
-      const descriptions = {
-        SUV: `The ${year} ${company} ${model} SUV offers exceptional versatility and comfort for both city driving and outdoor adventures.`,
-        Sedan: `The ${year} ${company} ${model} sedan delivers a perfect blend of comfort, style, and efficiency.`,
-        Truck: `The ${year} ${company} ${model} truck is built tough for serious work and reliability.`,
-        Van: `The ${year} ${company} ${model} van provides maximum space and flexibility for all your transportation needs.`,
-      };
+      const description = `The ${year} ${company} ${model} ${carType.toLowerCase()} combines style, performance, and comfort.`;
 
       setCarData({
         ...carData,
         title: carName,
-        description:
-          descriptions[carType] || `${year} ${company} ${model} ${carType}`,
+        description,
         car_type: carType,
-        company: company,
-        model: model,
-        year: year,
+        company,
+        model,
+        year,
         dealer: "Premium Auto Dealership",
-        tags: [
-          company.toLowerCase(),
-          model.toLowerCase(),
-          carType.toLowerCase(),
-          year.toString(),
-          "automatic",
-          "new",
-        ],
-        images: imageUrls, // This might be empty, but that's okay
+        tags: [company, model, carType, year]
+          .map((tag) => tag?.toString().toLowerCase())
+          .filter(Boolean),
+        images: imageUrls,
       });
 
-      // Only show error if no images were found
-      if (imageUrls.length === 0) {
+      if (!imageUrls.length) {
         setError("No images found. Please upload images manually.");
       }
     } catch (err) {
