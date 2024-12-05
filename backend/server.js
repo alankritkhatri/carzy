@@ -8,7 +8,7 @@ import User from "./dbSchema.js";
 import { authenticateToken } from "./middleware/auth.js";
 import axios from "axios";
 import swaggerUi from "swagger-ui-express";
-import specs from "./swagger.js";
+// import specs from "./swagger.js";
 
 dotenv.config();
 const app = express();
@@ -516,7 +516,7 @@ app.get("/api/proxy/lexica", async (req, res) => {
 });
 
 // API Documentation route
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
+// app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // Start Server
 connectDB();
