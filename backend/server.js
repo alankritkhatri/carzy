@@ -16,8 +16,8 @@ const PORT = process.env.PORT || 3000;
 
 // CORS configuration
 const allowedOrigins = [
-  "http://localhost:5173", // Vite dev server // Local development
-  "https://carzy.vercel.app", // Production
+  "http://localhost:5173",
+  "https://carzy.vercel.app",
   "https://www.carzy.vercel.app",
   "https://carzy-314787054684.asia-south2.run.app",
   "https://www.carzy.store",
@@ -33,30 +33,11 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-    maxAge: 86400, // 24 hours
   })
 );
-
-// Additional headers for extra CORS support
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  if (req.method === "OPTIONS") {
-    return res.status(200).json({});
-  }
-  next();
-});
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -64,33 +45,14 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // connecting to the database
 const connectDB = async () => {
   try {
-    // Add retry logic
-    let retries = 3;
-    while (retries > 0) {
-      try {
-        await mongoose.connect(process.env.DB_STRING, {
-          retryWrites: true,
-          w: "majority",
-          serverSelectionTimeoutMS: 10000, // Increased timeout to 10 seconds
-          socketTimeoutMS: 45000,
-        });
-        console.log("MongoDB is now connected");
-        break; // Connection successful, exit the retry loop
-      } catch (err) {
-        retries--;
-        if (retries === 0) throw err;
-        console.log(
-          `Connection failed, retrying... (${retries} attempts left)`
-        );
-        await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds before retrying
-      }
-    }
+    await mongoose.connect(process.env.DB_STRING, {
+      retryWrites: true,
+      w: "majority",
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
+    console.log("MongoDB is now connected");
 
-    // Access the 'carzy' database and 'userdata' collection
-    const database = mongoose.connection.db;
-    global.userData = database.collection("userdata");
-
-    // Add error handling for the connection
     mongoose.connection.on("error", (err) => {
       console.error("MongoDB connection error:", err);
     });
@@ -100,25 +62,19 @@ const connectDB = async () => {
     });
   } catch (err) {
     console.error("MongoDB connection error:", err.message);
-    console.error(
-      "Please ensure your IP address is whitelisted in MongoDB Atlas"
-    );
     process.exit(1);
   }
 };
 
-// Add this helper function at the top
-const generateUniqueUrl = (title) => {
-  return `${title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString(36)}`;
-};
-
-const generateShowcaseUrl = (name) => {
-  return `${name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString(36)}`;
-};
+// Helper functions
+const generateUniqueUrl = (title) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, "-") +
+  "-" +
+  Date.now().toString(36);
+const generateShowcaseUrl = (name) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, "-") +
+  "-" +
+  Date.now().toString(36);
 
 // ROUTES
 

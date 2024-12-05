@@ -18,7 +18,7 @@ const AppRoutes = () => {
   return (
     <>
       <Navbar />
-      <Routes future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Routes>
         <Route
           path="/"
           element={
@@ -44,11 +44,10 @@ const AppRoutes = () => {
   );
 };
 
-// Main App component
 const App = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter future={{ v7_startTransition: true }}>
+      <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
     </Provider>
