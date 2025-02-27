@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app",
+        target: "https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app",
         changeOrigin: true,
         secure: false,
       },

@@ -18,7 +18,7 @@ const Carsection = () => {
   const fetchCars = async () => {
     try {
       const response = await axios.get(
-        "https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/cars",
+        "https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/cars",
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -51,7 +51,7 @@ const Carsection = () => {
 
     try {
       await axios.delete(
-        `https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/cars/${carId}`,
+        `https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/cars/${carId}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,

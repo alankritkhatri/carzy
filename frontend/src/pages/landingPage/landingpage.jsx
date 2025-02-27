@@ -25,7 +25,7 @@ export default function LandingPage() {
     try {
       console.log(formData);
       const response = await fetch(
-        "https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/register",
+        "https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/register",
         {
           method: "POST",
           headers: {

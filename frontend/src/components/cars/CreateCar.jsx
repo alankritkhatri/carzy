@@ -88,7 +88,7 @@ const CreateCar = () => {
 
     try {
       await axios.post(
-        "https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/cars",
+        "https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/cars",
         carData,
         {
           headers: {
