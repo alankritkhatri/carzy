@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import "./authpage.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setUserData } from "../../store";
+import { useAuth } from "../../context/AuthContext";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,7 +14,7 @@ const AuthPage = () => {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { setUserData } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -59,17 +58,15 @@ const AuthPage = () => {
           };
 
       const response = await axios.post(
-        `https://carzy-314787054684.asia-south2.run.app${endpoint}`,
+        `https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app${endpoint}`,
         payload
       );
 
-      dispatch(
-        setUserData({
-          username: response.data.name,
-          role: response.data.role,
-          token: response.data.token,
-        })
-      );
+      setUserData({
+        username: response.data.name,
+        role: response.data.role,
+        token: response.data.token,
+      });
 
       localStorage.setItem("token", response.data.token);
       navigate("/dashboard");
@@ -79,60 +76,60 @@ const AuthPage = () => {
   };
 
   return (
-    <div>
-      <div className="login-register-container">
-        <div className="form-container">
-          <h2>{isLogin ? "Login" : "Register"}</h2>
-          <form onSubmit={handleSubmit}>
-            {error && <div className="error-message">{error}</div>}
-            {!isLogin && (
+    <div className="auth-container">
+      <div className="auth-box">
+        <h2>{isLogin ? "Login" : "Register"}</h2>
+        {error && <div className="error-message">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          {!isLogin && (
+            <div className="form-group">
+              <label>Name:</label>
               <input
                 type="text"
                 name="name"
-                placeholder="Full Name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="input-field"
               />
-            )}
+            </div>
+          )}
+          <div className="form-group">
+            <label>Email:</label>
             <input
               type="email"
               name="email"
-              placeholder="Email"
               value={formData.email}
               onChange={handleInputChange}
-              className="input-field"
             />
+          </div>
+          <div className="form-group">
+            <label>Password:</label>
             <input
               type="password"
               name="password"
-              placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
-              className="input-field"
             />
-            {!isLogin && (
+          </div>
+          {!isLogin && (
+            <div className="form-group">
+              <label>Confirm Password:</label>
               <input
                 type="password"
-                placeholder="Confirm Password"
-                className="input-field"
-                required
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
               />
-            )}
-            <button type="submit" className="submit-btn">
-              {isLogin ? "Login" : "Register"}
-            </button>
-          </form>
-
-          <p className="toggle-text" onClick={() => setIsLogin(!isLogin)}>
-            {isLogin
-              ? "Need an account? Register"
-              : "Already have an account? Login"}
-          </p>
-        </div>
+            </div>
+          )}
+          <button type="submit" className="auth-button">
+            {isLogin ? "Login" : "Register"}
+          </button>
+        </form>
+        <p onClick={() => setIsLogin(!isLogin)} className="toggle-auth-mode">
+          {isLogin
+            ? "Don't have an account? Register"
+            : "Already have an account? Login"}
+        </p>
       </div>
     </div>
   );

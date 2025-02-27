@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -8,20 +8,20 @@ const Carsection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const { token } = useSelector((state) => state.user);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchCars();
-  }, [token]);
+  }, [user.token]);
 
   const fetchCars = async () => {
     try {
       const response = await axios.get(
-        "https://carzy-314787054684.asia-south2.run.app/api/cars",
+        "https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/cars",
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
@@ -51,10 +51,10 @@ const Carsection = () => {
 
     try {
       await axios.delete(
-        `https://carzy-314787054684.asia-south2.run.app/api/cars/${carId}`,
+        `https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/cars/${carId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
@@ -66,78 +66,71 @@ const Carsection = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">My Cars</h1>
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex-1 max-w-md">
+          <input
+            type="text"
+            placeholder="Search cars..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="w-full p-2 border rounded"
+          />
+        </div>
         <button
           onClick={() => navigate("/cars/create")}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Add New Car
         </button>
       </div>
-      <input
-        type="text"
-        placeholder="Search cars"
-        value={searchTerm}
-        onChange={handleSearch}
-        className="w-full p-2 border rounded mb-6"
-      />
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCars.map((car) => (
           <div
             key={car._id}
-            className="border rounded-lg overflow-hidden shadow-lg"
+            className="bg-white rounded-lg shadow-md overflow-hidden"
           >
-            {car.images[0] && (
-              <img
-                src={car.images[0]}
-                alt={car.title}
-                className="w-full h-48 object-cover"
-              />
-            )}
-            <div className="p-4">
-              <h2 className="text-xl font-semibold mb-2">{car.title}</h2>
-              <p className="text-gray-600 mb-4">{car.description}</p>
-              <div className="mb-4 bg-gray-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-gray-700 mb-2">
-                  Public URL:
-                </p>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={`${window.location.origin}/cars/${car.publicUrl}`}
-                    readOnly
-                    className="text-sm bg-white border rounded px-2 py-1 flex-1 text-gray-600"
-                  />
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `${window.location.origin}/cars/${car.publicUrl}`
-                      );
-                      alert("URL copied to clipboard!");
-                    }}
-                    className="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 text-sm font-medium"
-                  >
-                    Copy
-                  </button>
+            <div className="relative h-48">
+              {car.images && car.images.length > 0 ? (
+                <img
+                  src={car.images[0]}
+                  alt={car.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-400">No image</span>
                 </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
+              )}
+            </div>
+            <div className="p-4">
+              <h3 className="text-xl font-semibold mb-2">{car.title}</h3>
+              <p className="text-gray-600 mb-4 line-clamp-2">
+                {car.description}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
                 {car.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-gray-200 px-2 py-1 rounded-full text-sm"
+                    className="px-2 py-1 bg-gray-200 rounded-full text-sm"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
-              <div className="flex justify-end mt-4 space-x-2">
+              <div className="flex justify-between items-center">
                 <button
                   onClick={() => navigate(`/cars/edit/${car._id}`)}
                   className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -155,6 +148,10 @@ const Carsection = () => {
           </div>
         ))}
       </div>
+
+      {filteredCars.length === 0 && (
+        <div className="text-center text-gray-500 mt-8">No cars found</div>
+      )}
     </div>
   );
 };

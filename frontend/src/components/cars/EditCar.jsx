@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditCar = () => {
   const { id } = useParams();
-  const { isAuthenticated, token } = useSelector((state) => state.user);
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,19 +21,19 @@ const EditCar = () => {
   const [tagInput, setTagInput] = useState("");
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!user.isAuthenticated) {
       navigate("/login");
     }
     fetchCarDetails();
-  }, [isAuthenticated, navigate, id]);
+  }, [user.isAuthenticated, navigate, id]);
 
   const fetchCarDetails = async () => {
     try {
       const response = await axios.get(
-        `https://carzy-314787054684.asia-south2.run.app/api/cars/${id}`,
+        `https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/cars/${id}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
@@ -78,9 +78,8 @@ const EditCar = () => {
     });
   };
 
-  const handleAddTag = (e) => {
-    e.preventDefault();
-    if (tagInput.trim()) {
+  const handleTagAdd = () => {
+    if (tagInput.trim() && !carData.tags.includes(tagInput.trim())) {
       setCarData({
         ...carData,
         tags: [...carData.tags, tagInput.trim()],
@@ -89,10 +88,10 @@ const EditCar = () => {
     }
   };
 
-  const handleRemoveTag = (indexToRemove) => {
+  const handleTagRemove = (tagToRemove) => {
     setCarData({
       ...carData,
-      tags: carData.tags.filter((_, index) => index !== indexToRemove),
+      tags: carData.tags.filter((tag) => tag !== tagToRemove),
     });
   };
 
@@ -102,36 +101,29 @@ const EditCar = () => {
     setError("");
 
     try {
-      const response = await axios.put(
-        `https://carzy-314787054684.asia-south2.run.app/api/cars/${id}`,
+      await axios.put(
+        `https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/cars/${id}`,
         carData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
-
-      if (response.status === 200) {
-        navigate("/dashboard");
-      } else {
-        throw new Error("Failed to update car");
-      }
+      navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update car");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Edit Car</h2>
+    <div className="max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Edit Car Listing</h1>
       {error && <div className="text-red-500 mb-4">{error}</div>}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Title</label>
+          <label className="block mb-1">Title</label>
           <input
             type="text"
             name="title"
@@ -141,9 +133,8 @@ const EditCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Description</label>
+          <label className="block mb-1">Description</label>
           <textarea
             name="description"
             value={carData.description}
@@ -153,32 +144,8 @@ const EditCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">
-            Images (Max 10)
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className="w-full p-2 border rounded"
-          />
-          <div className="grid grid-cols-5 gap-2 mt-2">
-            {carData.images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`Preview ${index + 1}`}
-                className="w-full h-20 object-cover rounded"
-              />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Car Type</label>
+          <label className="block mb-1">Car Type</label>
           <input
             type="text"
             name="car_type"
@@ -188,9 +155,8 @@ const EditCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Company</label>
+          <label className="block mb-1">Company</label>
           <input
             type="text"
             name="company"
@@ -200,9 +166,8 @@ const EditCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Dealer</label>
+          <label className="block mb-1">Dealer</label>
           <input
             type="text"
             name="dealer"
@@ -212,9 +177,28 @@ const EditCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Tags</label>
+          <label className="block mb-1">Images (Max 10)</label>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="w-full p-2 border rounded"
+          />
+          <div className="mt-2 flex flex-wrap gap-2">
+            {carData.images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Preview ${index + 1}`}
+                className="w-24 h-24 object-cover rounded"
+              />
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="block mb-1">Tags</label>
           <div className="flex gap-2">
             <input
               type="text"
@@ -224,24 +208,24 @@ const EditCar = () => {
               placeholder="Add a tag"
             />
             <button
-              onClick={handleAddTag}
               type="button"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onClick={handleTagAdd}
+              className="px-4 py-2 bg-blue-500 text-white rounded"
             >
               Add
             </button>
           </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {carData.tags.map((tag, index) => (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {carData.tags.map((tag) => (
               <span
-                key={index}
-                className="bg-gray-200 px-2 py-1 rounded-full text-sm flex items-center gap-1"
+                key={tag}
+                className="px-2 py-1 bg-gray-200 rounded flex items-center gap-1"
               >
                 {tag}
                 <button
                   type="button"
-                  onClick={() => handleRemoveTag(index)}
-                  className="text-red-500 hover:text-red-700"
+                  onClick={() => handleTagRemove(tag)}
+                  className="text-red-500"
                 >
                   ×
                 </button>
@@ -249,23 +233,15 @@ const EditCar = () => {
             ))}
           </div>
         </div>
-
-        <div className="flex gap-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            {loading ? "Updating..." : "Update"}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/dashboard")}
-            className="flex-1 py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600"
-          >
-            Cancel
-          </button>
-        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full p-2 text-white rounded ${
+            loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          {loading ? "Updating..." : "Update Car Listing"}
+        </button>
       </form>
     </div>
   );

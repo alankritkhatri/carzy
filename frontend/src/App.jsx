@@ -2,18 +2,17 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import AuthPage from "./pages/Authentication/AuthPage";
 import Navbar from "./components/Navbar";
-import { Provider } from "react-redux";
-import store from "./store";
 import LandingPage from "./pages/landingPage/landingpage";
 import CreateCar from "./components/cars/CreateCar";
-import { useSelector } from "react-redux";
+import { useAuth } from "./context/AuthContext";
 import EditCar from "./components/cars/EditCar";
 import PublicCarView from "./components/cars/PublicCarView";
 import PublicCarDetail from "./components/cars/PublicCarDetail";
 import ShowcasePage from "./pages/ShowcasePage/ShowcasePage";
+import { AuthProvider } from "./context/AuthContext";
 
 const AppRoutes = () => {
-  const { isAuthenticated } = useSelector((state) => state.user);
+  const { user } = useAuth();
 
   return (
     <>
@@ -22,13 +21,17 @@ const AppRoutes = () => {
         <Route
           path="/"
           element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />
+            user.isAuthenticated ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <LandingPage />
+            )
           }
         />
         <Route
           path="/login"
           element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <AuthPage />
+            user.isAuthenticated ? <Navigate to="/dashboard" /> : <AuthPage />
           }
         />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -46,11 +49,11 @@ const AppRoutes = () => {
 
 const App = () => {
   return (
-    <Provider store={store}>
+    <AuthProvider>
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
-    </Provider>
+    </AuthProvider>
   );
 };
 

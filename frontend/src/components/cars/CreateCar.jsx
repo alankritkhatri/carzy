@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const CreateCar = () => {
-  const { isAuthenticated, token } = useSelector((state) => state.user);
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,10 +22,10 @@ const CreateCar = () => {
   const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!user.isAuthenticated) {
       navigate("/login");
     }
-  }, [isAuthenticated, navigate]);
+  }, [user.isAuthenticated, navigate]);
 
   const handleInputChange = (e) => {
     setCarData({
@@ -64,9 +64,8 @@ const CreateCar = () => {
     });
   };
 
-  const handleAddTag = (e) => {
-    e.preventDefault();
-    if (tagInput.trim()) {
+  const handleTagAdd = () => {
+    if (tagInput.trim() && !carData.tags.includes(tagInput.trim())) {
       setCarData({
         ...carData,
         tags: [...carData.tags, tagInput.trim()],
@@ -75,10 +74,10 @@ const CreateCar = () => {
     }
   };
 
-  const handleRemoveTag = (indexToRemove) => {
+  const handleTagRemove = (tagToRemove) => {
     setCarData({
       ...carData,
-      tags: carData.tags.filter((_, index) => index !== indexToRemove),
+      tags: carData.tags.filter((tag) => tag !== tagToRemove),
     });
   };
 
@@ -88,166 +87,29 @@ const CreateCar = () => {
     setError("");
 
     try {
-      const response = await axios.post(
-        "https://carzy-314787054684.asia-south2.run.app/api/cars",
+      await axios.post(
+        "https://carzy-backend-bdsuqxeqi-brooks07s-projects.vercel.app/api/cars",
         carData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
-
-      if (response.status === 201) {
-        navigate("/dashboard");
-      } else {
-        throw new Error("Failed to create car");
-      }
+      navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create car");
-    } finally {
       setLoading(false);
     }
   };
 
-  const generateCarDetails = async (carName) => {
-    setGenerating(true);
-    setError("");
-
-    try {
-      const [company, model, year = new Date().getFullYear()] =
-        carName.split(" ");
-      const carType = model?.toLowerCase().includes("suv")
-        ? "SUV"
-        : model?.toLowerCase().includes("truck")
-        ? "Truck"
-        : model?.toLowerCase().includes("van")
-        ? "Van"
-        : "Sedan";
-
-      const baseUrl =
-        process.env.NODE_ENV === "production"
-          ? "https://carzy-314787054684.asia-south2.run.app"
-          : "";
-      const response = await axios.get(
-        `${baseUrl}/api/proxy/lexica?q=${encodeURIComponent(
-          `${company} ${model} car`
-        )}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const imageUrls = (response.data?.images || [])
-        .filter((img) => img?.src)
-        .slice(0, 3)
-        .map((img) => img.src);
-
-      const description = `The ${year} ${company} ${model} ${carType.toLowerCase()} combines style, performance, and comfort.`;
-
-      setCarData({
-        ...carData,
-        title: carName,
-        description,
-        car_type: carType,
-        company,
-        model,
-        year,
-        dealer: "Premium Auto Dealership",
-        tags: [company, model, carType, year]
-          .map((tag) => tag?.toString().toLowerCase())
-          .filter(Boolean),
-        images: imageUrls,
-      });
-
-      if (!imageUrls.length) {
-        setError("No images found. Please upload images manually.");
-      }
-    } catch (err) {
-      console.error("Generation error:", err);
-      setError(
-        "Failed to generate car details. Please try again or enter details manually."
-      );
-    } finally {
-      setGenerating(false);
-    }
-  };
-
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Add New Car</h2>
+    <div className="max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Create New Car Listing</h1>
       {error && <div className="text-red-500 mb-4">{error}</div>}
-
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-        <h3 className="text-lg font-medium mb-2">Quick Generate</h3>
-        <div className="flex flex-col gap-2">
-          <input
-            type="text"
-            value={carNameInput}
-            onChange={(e) => setCarNameInput(e.target.value)}
-            placeholder="Enter car name (e.g., Toyota Camry 2024)"
-            className="w-full p-2 border rounded"
-          />
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-500">
-              Format: Brand Model Year (e.g., Toyota Camry 2024)
-            </p>
-            <button
-              onClick={() => generateCarDetails(carNameInput)}
-              disabled={generating || !carNameInput.trim()}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 flex items-center gap-2"
-            >
-              {generating ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Generating Images...
-                </>
-              ) : (
-                "Generate"
-              )}
-            </button>
-          </div>
-          {generating && (
-            <div className="mt-2 text-sm text-gray-600 flex items-center gap-2">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce"></div>
-                <div
-                  className="w-2 h-2 bg-green-500 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-green-500 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.4s" }}
-                ></div>
-              </div>
-              Generating 1 AI image for your car...
-            </div>
-          )}
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Title</label>
+          <label className="block mb-1">Title</label>
           <input
             type="text"
             name="title"
@@ -257,9 +119,8 @@ const CreateCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Description</label>
+          <label className="block mb-1">Description</label>
           <textarea
             name="description"
             value={carData.description}
@@ -269,32 +130,8 @@ const CreateCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">
-            Images (Max 10)
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className="w-full p-2 border rounded"
-          />
-          <div className="grid grid-cols-5 gap-2 mt-2">
-            {carData.images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`Preview ${index + 1}`}
-                className="w-full h-20 object-cover rounded"
-              />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Car Type</label>
+          <label className="block mb-1">Car Type</label>
           <input
             type="text"
             name="car_type"
@@ -304,9 +141,8 @@ const CreateCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Company</label>
+          <label className="block mb-1">Company</label>
           <input
             type="text"
             name="company"
@@ -316,9 +152,8 @@ const CreateCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Dealer</label>
+          <label className="block mb-1">Dealer</label>
           <input
             type="text"
             name="dealer"
@@ -328,9 +163,28 @@ const CreateCar = () => {
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Tags</label>
+          <label className="block mb-1">Images (Max 10)</label>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="w-full p-2 border rounded"
+          />
+          <div className="mt-2 flex flex-wrap gap-2">
+            {carData.images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Preview ${index + 1}`}
+                className="w-24 h-24 object-cover rounded"
+              />
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="block mb-1">Tags</label>
           <div className="flex gap-2">
             <input
               type="text"
@@ -340,24 +194,24 @@ const CreateCar = () => {
               placeholder="Add a tag"
             />
             <button
-              onClick={handleAddTag}
               type="button"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onClick={handleTagAdd}
+              className="px-4 py-2 bg-blue-500 text-white rounded"
             >
               Add
             </button>
           </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {carData.tags.map((tag, index) => (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {carData.tags.map((tag) => (
               <span
-                key={index}
-                className="bg-gray-200 px-2 py-1 rounded-full text-sm flex items-center gap-1"
+                key={tag}
+                className="px-2 py-1 bg-gray-200 rounded flex items-center gap-1"
               >
                 {tag}
                 <button
                   type="button"
-                  onClick={() => handleRemoveTag(index)}
-                  className="text-red-500 hover:text-red-700"
+                  onClick={() => handleTagRemove(tag)}
+                  className="text-red-500"
                 >
                   ×
                 </button>
@@ -365,13 +219,14 @@ const CreateCar = () => {
             ))}
           </div>
         </div>
-
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
+          className={`w-full p-2 text-white rounded ${
+            loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
-          {loading ? "Creating..." : "Create Car"}
+          {loading ? "Creating..." : "Create Car Listing"}
         </button>
       </form>
     </div>

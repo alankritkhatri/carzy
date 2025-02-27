@@ -1,15 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { clearUserData } from "../store";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const username = useSelector((state) => state.user.username);
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const { user, clearUserData } = useAuth();
 
   const handleLogout = () => {
-    dispatch(clearUserData());
+    clearUserData();
     localStorage.removeItem("token");
     navigate("/login");
   };
@@ -38,10 +35,10 @@ const Navbar = () => {
       </nav>
 
       <div className="flex items-center gap-4 ml-6">
-        {isAuthenticated ? (
+        {user.isAuthenticated ? (
           <>
             <div className="user-info">
-              <h1 className="underline">{username}</h1>
+              <h1 className="underline">{user.username}</h1>
             </div>
             <button
               onClick={handleLogout}
