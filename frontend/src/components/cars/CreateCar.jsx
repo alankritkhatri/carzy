@@ -87,15 +87,11 @@ const CreateCar = () => {
     setError("");
 
     try {
-      await axios.post(
-        "https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/cars",
-        carData,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+      await axios.post("https://carzy-bz9m.onrender.com/api/cars", carData, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create car");

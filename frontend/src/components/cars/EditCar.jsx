@@ -30,7 +30,7 @@ const EditCar = () => {
   const fetchCarDetails = async () => {
     try {
       const response = await axios.get(
-        `https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/cars/${id}`,
+        `https://carzy-bz9m.onrender.com/api/cars/${id}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -102,7 +102,7 @@ const EditCar = () => {
 
     try {
       await axios.put(
-        `https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/cars/${id}`,
+        `https://carzy-bz9m.onrender.com/api/cars/${id}`,
         carData,
         {
           headers: {

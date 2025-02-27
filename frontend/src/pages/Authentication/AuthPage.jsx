@@ -58,7 +58,7 @@ const AuthPage = () => {
           };
 
       const response = await axios.post(
-        `https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app${endpoint}`,
+        `https://carzy-bz9m.onrender.com${endpoint}`,
         payload
       );
 

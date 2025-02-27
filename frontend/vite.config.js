@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app",
+        target: "https://carzy-bz9m.onrender.com",
         changeOrigin: true,
         secure: false,
       },

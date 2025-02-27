@@ -17,7 +17,7 @@ const ShowcasePage = () => {
         console.log("Fetching showcase for1:", encodedName);
 
         const response = await axios.get(
-          `https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/showcase/${encodedName}`
+          `https://carzy-bz9m.onrender.com/api/showcase/${encodedName}`
         );
         console.log("Showcase response:", response.data);
 

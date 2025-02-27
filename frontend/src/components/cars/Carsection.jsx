@@ -18,7 +18,7 @@ const Carsection = () => {
   const fetchCars = async () => {
     try {
       const response = await axios.get(
-        "https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/cars",
+        "https://carzy-bz9m.onrender.com/api/cars",
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -50,14 +50,11 @@ const Carsection = () => {
     if (!window.confirm("Are you sure you want to delete this car?")) return;
 
     try {
-      await axios.delete(
-        `https://carzy-backend-gnuuvz357-brooks07s-projects.vercel.app/api/cars/${carId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+      await axios.delete(`https://carzy-bz9m.onrender.com/api/cars/${carId}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
 
       // Refresh the cars list
       fetchCars();
