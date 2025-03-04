@@ -10,7 +10,7 @@
 //     },
 //     servers: [
 //       {
-//         url: "https://carzy-314787054684.asia-south2.run.app",
+//         url: "https://carzy-backend-production.up.railway.app",
 //         description: "Development server",
 //       },
 //     ],
@@ -24,7 +24,7 @@
 //       },
 //     },
 //   },
-//   apis: ["./server.js"], // Path to the API routes
+//   apis: ["./index.js"], // Path to the API routes
 // };
 
 // const specs = swaggerJsdoc(options);

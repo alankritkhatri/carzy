@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://carzy-bz9m.onrender.com",
+        target: "https://carzy-backend-production.up.railway.app",
         changeOrigin: true,
         secure: false,
       },

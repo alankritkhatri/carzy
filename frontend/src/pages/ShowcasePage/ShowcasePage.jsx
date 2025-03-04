@@ -17,7 +17,7 @@ const ShowcasePage = () => {
         console.log("Fetching showcase for1:", encodedName);
 
         const response = await axios.get(
-          `https://carzy-bz9m.onrender.com/api/showcase/${encodedName}`
+          `https://carzy-backend-production.up.railway.app/api/showcase/${encodedName}`
         );
         console.log("Showcase response:", response.data);
 

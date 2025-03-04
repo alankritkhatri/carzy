@@ -30,7 +30,7 @@ const EditCar = () => {
   const fetchCarDetails = async () => {
     try {
       const response = await axios.get(
-        `https://carzy-bz9m.onrender.com/api/cars/${id}`,
+        `https://carzy-backend-production.up.railway.app/api/cars/${id}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -102,7 +102,7 @@ const EditCar = () => {
 
     try {
       await axios.put(
-        `https://carzy-bz9m.onrender.com/api/cars/${id}`,
+        `https://carzy-backend-production.up.railway.app/api/cars/${id}`,
         carData,
         {
           headers: {

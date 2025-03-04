@@ -25,7 +25,7 @@ export default function LandingPage() {
     try {
       console.log(formData);
       const response = await fetch(
-        "https://carzy-bz9m.onrender.com/api/register",
+        "https://carzy-backend-production.up.railway.app/api/register",
         {
           method: "POST",
           headers: {

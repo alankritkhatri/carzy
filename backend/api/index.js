@@ -19,14 +19,18 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://carzy.vercel.app",
   "https://www.carzy.vercel.app",
-  "https://carzy-314787054684.asia-south2.run.app",
+  "https://carzy-backend-production.up.railway.app",
   "https://www.carzy.store",
+  process.env.FRONTEND_URL,
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         console.log("Blocked by CORS:", origin);
@@ -41,6 +45,21 @@ app.use(
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+// Add this right after your CORS and express.json middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "API is running",
+    environment: process.env.NODE_ENV || "development",
+  });
+});
 
 // connecting to the database
 const connectDB = async () => {
@@ -517,6 +536,21 @@ app.get("/api/proxy/lexica", async (req, res) => {
 
 // API Documentation route
 // app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
+
+// Add error handling middleware at the end of all your routes
+app.use((err, req, res, next) => {
+  console.error("Global error handler:", err);
+  res.status(500).json({
+    message: "Internal server error",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
+});
+
+// Add this right before your app.listen
+app.use((req, res) => {
+  console.log(`404 - Route not found: ${req.method} ${req.path}`);
+  res.status(404).json({ message: "Route not found" });
+});
 
 // Start Server
 connectDB();
