@@ -10,7 +10,7 @@
 //     },
 //     servers: [
 //       {
-//         url: "https://65.1.110.113:3000",
+//         url: "https://api.carzy.store",
 //         description: "Development server",
 //       },
 //     ],

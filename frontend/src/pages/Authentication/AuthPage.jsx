@@ -58,7 +58,7 @@ const AuthPage = () => {
           };
 
       const response = await axios.post(
-        `https://65.1.110.113:3000${endpoint}`,
+        `https://api.carzy.store${endpoint}`,
         payload
       );
 

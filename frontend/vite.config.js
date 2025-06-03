@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://65.1.110.113:3000",
+        target: "https://api.carzy.store",
         changeOrigin: true,
         secure: false,
       },

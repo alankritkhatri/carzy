@@ -30,7 +30,7 @@ const EditCar = () => {
   const fetchCarDetails = async () => {
     try {
       const response = await axios.get(
-        `https://65.1.110.113:3000/api/cars/${id}`,
+        `https://api.carzy.store/api/cars/${id}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -101,7 +101,7 @@ const EditCar = () => {
     setError("");
 
     try {
-      await axios.put(`https://65.1.110.113:3000/api/cars/${id}`, carData, {
+      await axios.put(`https://api.carzy.store/api/cars/${id}`, carData, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },

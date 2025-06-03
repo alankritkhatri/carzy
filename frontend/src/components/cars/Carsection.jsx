@@ -17,7 +17,7 @@ const Carsection = () => {
 
   const fetchCars = async () => {
     try {
-      const response = await axios.get("https://65.1.110.113:3000/api/cars", {
+      const response = await axios.get("https://api.carzy.store/api/cars", {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -47,7 +47,7 @@ const Carsection = () => {
     if (!window.confirm("Are you sure you want to delete this car?")) return;
 
     try {
-      await axios.delete(`https://65.1.110.113:3000/api/cars/${carId}`, {
+      await axios.delete(`https://api.carzy.store/api/cars/${carId}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },

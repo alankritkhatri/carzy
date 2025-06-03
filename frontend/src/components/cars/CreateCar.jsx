@@ -91,7 +91,7 @@ const CreateCar = () => {
 
     try {
       const response = await axios.post(
-        "https://65.1.110.113:3000/api/cars",
+        "https://api.carzy.store/api/cars",
         carData,
         {
           headers: {
@@ -171,7 +171,7 @@ const CreateCar = () => {
 
       // Prepare search query
       const searchQuery = `${company} ${model} ${year} car exterior`;
-      const baseUrl = "https://65.1.110.113:3000";
+      const baseUrl = "https://api.carzy.store";
 
       try {
         // First try to get images from our backend proxy

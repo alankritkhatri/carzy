@@ -17,7 +17,7 @@ const ShowcasePage = () => {
         console.log("Fetching showcase for1:", encodedName);
 
         const response = await axios.get(
-          `https://65.1.110.113:3000/api/showcase/${encodedName}`
+          `https://api.carzy.store/api/showcase/${encodedName}`
         );
         console.log("Showcase response:", response.data);
 

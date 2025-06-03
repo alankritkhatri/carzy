@@ -19,7 +19,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://carzy.vercel.app",
   "https://www.carzy.vercel.app",
-  "https://65.1.110.113:3000",
+  "https://api.carzy.store",
   "https://www.carzy.store",
   process.env.FRONTEND_URL,
 ];
