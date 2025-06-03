@@ -30,7 +30,7 @@ const EditCar = () => {
   const fetchCarDetails = async () => {
     try {
       const response = await axios.get(
-        `https://carzy-backend-production.up.railway.app/api/cars/${id}`,
+        `https://65.1.110.113:3000/api/cars/${id}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -101,15 +101,11 @@ const EditCar = () => {
     setError("");
 
     try {
-      await axios.put(
-        `https://carzy-backend-production.up.railway.app/api/cars/${id}`,
-        carData,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+      await axios.put(`https://65.1.110.113:3000/api/cars/${id}`, carData, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update car");

@@ -58,7 +58,7 @@ const AuthPage = () => {
           };
 
       const response = await axios.post(
-        `https://carzy-backend-production.up.railway.app${endpoint}`,
+        `https://65.1.110.113:3000${endpoint}`,
         payload
       );
 

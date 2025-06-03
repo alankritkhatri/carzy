@@ -24,16 +24,13 @@ export default function LandingPage() {
 
     try {
       console.log(formData);
-      const response = await fetch(
-        "https://carzy-backend-production.up.railway.app/api/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch("https://65.1.110.113:3000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
       if (!response.ok) {
         const data = await response.json();

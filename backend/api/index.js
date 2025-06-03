@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import User from "./dbSchema.js";
@@ -19,7 +19,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://carzy.vercel.app",
   "https://www.carzy.vercel.app",
-  "https://carzy-backend-production.up.railway.app",
+  "https://65.1.110.113:3000",
   "https://www.carzy.store",
   process.env.FRONTEND_URL,
 ];

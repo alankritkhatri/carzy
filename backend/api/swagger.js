@@ -10,7 +10,7 @@
 //     },
 //     servers: [
 //       {
-//         url: "https://carzy-backend-production.up.railway.app",
+//         url: "https://65.1.110.113:3000",
 //         description: "Development server",
 //       },
 //     ],
