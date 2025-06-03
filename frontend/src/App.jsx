@@ -10,7 +10,6 @@ import PublicCarView from "./components/cars/PublicCarView";
 import PublicCarDetail from "./components/cars/PublicCarDetail";
 import ShowcasePage from "./pages/ShowcasePage/ShowcasePage";
 import { AuthProvider } from "./context/AuthContext";
-import Interview from "./pages/Interview";
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -42,7 +41,6 @@ const AppRoutes = () => {
         <Route path="/public/cars/:publicUrl" element={<PublicCarDetail />} />
         <Route path="/cars/:publicUrl" element={<PublicCarView />} />
         <Route path="/showcase/:name" element={<ShowcasePage />} />
-        <Route path="/inteview" element={<Interview />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
